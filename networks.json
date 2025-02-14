@@ -1,0 +1,10 @@
+{
+  "manta-pacific-sepolia": {
+    "MockCuratorFactory": {
+      "address": "0x9E82193de9bFbdD813Ba8fe572F56104B4F5bD7c"
+    },
+    "MockArtha": {
+      "address": "0xc39b0Fb736409C50cCD9Da42248b507762B18cE8"
+    }
+  }
+}

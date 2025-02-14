@@ -1,0 +1,111 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MockCuratorFactory
+    network: manta-pacific-sepolia
+    source:
+      address: "0x9E82193de9bFbdD813Ba8fe572F56104B4F5bD7c"
+      abi: MockCuratorFactory
+      startBlock: 3133110
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CuratorDeployed
+      abis:
+        - name: MockCuratorFactory
+          file: ./abis/MockCuratorFactory.json
+      eventHandlers:
+        - event: CuratorDeployed(indexed address,string,string,address,bytes32[],uint256[])
+          handler: handleCuratorDeployed
+      file: ./src/CuratorFactory.ts
+  - kind: ethereum
+    name: MockArtha
+    network: manta-pacific-sepolia
+    source:
+      address: "0xD3Ec43F60E2AC1517c4DD80C0A23Ad8d902EAF0F"
+      abi: MockArtha
+      startBlock: 3128020
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AuctionSettled
+        - Bid
+        - Borrow
+        - InterestRateModelChanged
+        - LTVChanged
+        - OwnershipTransferred
+        - PoolCreated
+        - Repay
+        - Supply
+        - SupplyCollateral
+        - Withdraw
+        - WithdrawCollateral
+        - Accrued
+        - CollateralToken
+        - LoanToken
+        - Token
+        - Position
+      abis:
+        - name: MockArtha
+          file: ./abis/MockArtha.json
+      eventHandlers:
+        - event: AuctionSettled(bytes32,uint256,address,uint256)
+          handler: handleAuctionSettled
+        - event: Bid(bytes32,uint256,address,uint256)
+          handler: handleBid
+        - event: Borrow(bytes32,uint256,address,address,address,uint256,uint256)
+          handler: handleBorrow
+        - event: InterestRateModelChanged(address,bool)
+          handler: handleInterestRateModelChanged
+        - event: LTVChanged(uint256,bool)
+          handler: handleLTVChanged
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PoolCreated(bytes32,(address,address,address,address,uint256,uint256))
+          handler: handlePoolCreated
+        - event: Repay(bytes32,uint256,address,address,uint256,uint256)
+          handler: handleRepay
+        - event: Supply(bytes32,address,address,uint256,uint256)
+          handler: handleSupply
+        - event: SupplyCollateral(bytes32,uint256,address,address)
+          handler: handleSupplyCollateral
+        - event: Withdraw(bytes32,address,address,address,uint256,uint256)
+          handler: handleWithdraw
+        - event: WithdrawCollateral(bytes32,uint256,address,address,address)
+          handler: handleWithdrawCollateral
+        - event: Accrued(bytes32,uint256,uint256,uint256)
+          handler: handleAccrued
+      file: ./src/mock-artha.ts
+templates:
+  - name: Curator
+    kind: ethereum/contract
+    network: manta-pacific-sepolia
+    source:
+      abi: Curator
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Curator
+      abis:
+        - name: Curator
+          file: ./abis/MockCurator.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Deposit(indexed address,indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleWithdraw
+      file: ./src/Curator.ts

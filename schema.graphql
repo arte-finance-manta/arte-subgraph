@@ -1,0 +1,213 @@
+type AuctionSettled @entity {
+  id: ID!
+  poolId: ID! # bytes32
+  tokenId: BigInt! # uint256
+  bidder: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Bid @entity {
+  id: ID!
+  poolId: ID! # bytes32
+  tokenId: BigInt! # uint256
+  bidder: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Borrow @entity {
+  id: ID!
+  poolId: ID! # bytes32
+  tokenId: BigInt! # uint256
+  sender: Bytes! # address
+  onBehalfOf: Bytes! # address
+  receiver: Bytes! # address
+  amount: BigInt! # uint256
+  shares: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type InterestRateModel @entity {
+  id: ID!
+  irm: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LTV @entity {
+  id: ID! # uint256
+  ltv: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Repay @entity {
+  id: Bytes!
+  poolId: Bytes! # bytes32
+  tokenId: BigInt! # uint256
+  sender: Bytes! # address
+  onBehalfOf: Bytes! # address
+  amount: BigInt! # uint256
+  shares: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Supply @entity {
+  id: ID!
+  poolId: Bytes! # bytes32
+  pool: Pool! # Reference to the Pool type
+  sender: Bytes! # address
+  onBehalfOf: Bytes! # address
+  amount: BigInt! # uint256
+  shares: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SupplyCollateral @entity {
+  id: ID!
+  poolId: Bytes! # bytes32
+  tokenId: BigInt! # uint256
+  sender: Bytes! # address
+  onBehalOf: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdraw @entity {
+  id: Bytes!
+  poolId: Bytes! # bytes32
+  sender: Bytes! # address
+  onBehalfOf: Bytes! # address
+  receiver: Bytes! # address
+  amount: BigInt! # uint256
+  shares: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type WithdrawCollateral @entity {
+  id: ID!
+  poolId: Bytes! # bytes32
+  tokenId: BigInt! # uint256
+  sender: Bytes! # address
+  onBehalfOf: Bytes! # address
+  receiver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Collateral @entity {
+  id: ID!
+  pool: [Pool!]! @derivedFrom(field: "collateralToken") # Reference to the Pool type
+  collateralToken: Bytes! # address
+}
+
+type LoanToken @entity {
+  id: ID!
+  pool: [Pool!]! @derivedFrom(field: "loanToken") # Reference to the Pool type
+  loanToken: Bytes! # address
+}
+
+type Pool @entity {
+  id: ID!
+  collateralAddress: Bytes! # address
+  collateralToken: Collateral!
+  loanAddress: Bytes! # address
+  loanToken: LoanToken!
+  oracle: Bytes # address
+  irm: Bytes # address
+  ltv: BigInt # uint256
+  lth: BigInt # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  curator: [CuratorDeployed!] # Reference to the CuratorDeployed type
+  # if deposit, then add to supplyAssets, else if withdraw, then subtract from supplyAssets
+  totalSupplyAssets: BigInt! # uint256
+  totalSupplyShares: BigInt! # uint256
+  # if borrow, then add to borrowAssets, else if repay, then subtract from borrowAssets
+  totalBorrowAssets: BigInt! # uint256
+  totalBorrowShares: BigInt! # uint256
+  lendingRate: BigInt! # uint256
+  borrowRate: BigInt! # uint256
+  utilizationRate: BigInt! # uint256
+  supplyAssets: [Supply!] # Reference to the Supply type
+
+  borrowAPY: BigInt # uint256
+  supplyAPY: BigInt # uint256
+}
+
+type CuratorDeployed @entity {
+  id: Bytes!
+  curator: Bytes! # address
+  name: String! # string
+  symbol: String! # string
+  asset: Bytes! # address
+  pools: [Bytes!]! # bytes32[]
+  allocations: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Account @entity {
+  # `address` of user is the unique identifier for an account
+  id: ID! # address
+  positions: [Position!]! # Reference to the Position type
+  lend: [Supply!]! # Reference to the Supply type
+  earn: [Balance!]! @derivedFrom(field: "account") # Reference to the Balance type
+}
+
+type Balance @entity {
+  # `curator-account` is the unique identifier for a balance
+  id: ID!
+  curator: Bytes! # address
+  account: Account! # Reference to the Account type
+  balance: BigInt! # uint256
+}
+
+type Accrued @entity {
+  id: ID!
+  poolId: Bytes! # bytes32
+  borrowRate: BigInt! # uint256
+  interest: BigInt! # uint256
+  feeShares: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Token @entity {
+  # `poolId-tokenId` is the unique identifier for a supply token
+  id: ID!
+  tokenId: BigInt! # uint256
+  pool: Pool!
+}
+
+type Position @entity {
+  # `poolId-tokenId` is the unique identifier for a position
+  id: ID!
+  account: Account! # Reference to the Account type
+  pool: Pool!
+  tokenId: BigInt! # uint256
+  token: Token!
+  # owner of the position
+  bidder: Bytes # address
+  borrowShares: BigInt! # uint256
+}
