@@ -8,7 +8,7 @@ dataSources:
     name: MockCuratorFactory
     network: manta-pacific-sepolia
     source:
-      address: "0x9E82193de9bFbdD813Ba8fe572F56104B4F5bD7c"
+      address: "0x5db691Fe9aC83820aC14d48D64d1834Ec7Bf3A74"
       abi: MockCuratorFactory
       startBlock: 3133110
     mapping:
@@ -28,7 +28,7 @@ dataSources:
     name: MockArtha
     network: manta-pacific-sepolia
     source:
-      address: "0xD3Ec43F60E2AC1517c4DD80C0A23Ad8d902EAF0F"
+      address: "0x34d438480F557592AB8aCf192D16C4C871401438"
       abi: MockArtha
       startBlock: 3128020
     mapping:
